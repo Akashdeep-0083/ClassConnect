@@ -1,0 +1,31 @@
+/* Receiver.css */
+
+.page-container {
+    background-color: black;
+    color: white;
+    min-height: 100vh; /* Ensure it covers full height */
+    padding-top: 60px; /* Space for the fixed navbar */
+}
+
+.jitsi-container {
+    border: 5px solid #fff; /* White border */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px; /* Padding inside the border */
+    margin: 20px; /* Margin around the component */
+}
+
+.leave-meeting-button {
+    background-color: #ff4d4d; /* Red background for leave button */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 20px; /* Space above the button */
+    transition: background-color 0.3s ease;
+}
+
+.leave-meeting-button:hover {
+    background-color: #ff1a1a; /* Darker red on hover */
+}

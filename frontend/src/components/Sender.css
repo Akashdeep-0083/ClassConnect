@@ -1,0 +1,13 @@
+.page-container {
+    background-color: black;
+    color: white;
+    min-height: 100vh; /* Ensure it covers full height */
+    padding-top: 60px; /* Space for the fixed navbar */
+}
+
+.jitsi-container {
+    border: 5px solid #fff; /* White border */
+    border-radius: 10px; /* Rounded corners */
+    padding: 20px; /* Padding inside the border */
+    margin: 20px; /* Margin around the component */
+}
