@@ -51,6 +51,11 @@
 // server.js
 
 
+// server.js
+
+// server.js
+
+// server.js
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -72,25 +77,43 @@ const sessions = {}; // Object to store session states
 io.on('connection', (socket) => {
     console.log('New client connected');
 
+    // Event for joining a session
     socket.on('join-session', (sessionCode) => {
-        if (!sessions[sessionCode]) {
-            // If the session doesn't exist, create it and assign the moderator
+        if (sessions[sessionCode]) {
+            // If session exists
+            if (!sessions[sessionCode].moderator) {
+                // If no moderator, the first joiner becomes the moderator
+                sessions[sessionCode].moderator = socket.id;
+                socket.join(sessionCode);
+                socket.emit('joined', { role: 'moderator' });
+                console.log(`New moderator joined session: ${sessionCode}`);
+            } else {
+                // If a moderator is already present, join as a student
+                sessions[sessionCode].students.push(socket.id);
+                socket.join(sessionCode);
+                socket.emit('joined', { role: 'student' });
+                console.log(`Student joined session: ${sessionCode}`);
+            }
+        } else {
+            // If session does not exist, create a new one
             sessions[sessionCode] = { moderator: socket.id, students: [] };
             socket.join(sessionCode);
-            socket.emit('joined', { role: 'moderator' }); // Notify that the moderator has joined
+            socket.emit('joined', { role: 'moderator' });
             console.log(`New moderator joined session: ${sessionCode}`);
+        }
+    });
+
+    // Event for starting a session
+    socket.on('start-session', (sessionCode) => {
+        if (sessions[sessionCode]) {
+            // If the session already exists, send an error
+            socket.emit('error', { message: 'Session already exists. Please join instead.' });
         } else {
-            // If the session exists
-            if (sessions[sessionCode].moderator) {
-                // A moderator is already present
-                socket.emit('error', 'A moderator is already present in this session.');
-                return;
-            }
-            // Allow joining as a student
-            sessions[sessionCode].students.push(socket.id);
+            // Create a new session and set the sender as the moderator
+            sessions[sessionCode] = { moderator: socket.id, students: [] };
             socket.join(sessionCode);
-            socket.emit('joined', { role: 'student' }); // Notify that a student has joined
-            console.log(`Student joined session: ${sessionCode}`);
+            socket.emit('started', { role: 'moderator' });
+            console.log(`Session started: ${sessionCode} with moderator: ${socket.id}`);
         }
     });
 
