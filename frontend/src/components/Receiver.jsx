@@ -193,6 +193,7 @@
 
 // export default Receiver;
 
+// src/components/Receiver.jsx
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import io from 'socket.io-client';
@@ -218,7 +219,7 @@ const Receiver = () => {
         // Initialize socket connection
         try {
             socketRef.current = io('http://localhost:5000'); // Ensure your Socket.IO server is running
-            socketRef.current.emit('join-session', sessionCode);
+            socketRef.current.emit('join-session', sessionCode); // Join the session
 
             // Handle incoming messages
             socketRef.current.on('message', handleMessage);
@@ -228,6 +229,13 @@ const Receiver = () => {
                 alert(error); // Display error message to the user
                 navigate('/'); // Navigate back to the home page or another route
             });
+
+            // Handle successful joining
+            socketRef.current.on('joined', ({ role }) => {
+                console.log(`Joined session as: ${role}`);
+                // You can add any additional logic here if needed
+            });
+
         } catch (error) {
             console.error('Error connecting to socket server:', error);
         }
@@ -247,7 +255,7 @@ const Receiver = () => {
 
         const domain = 'meet.jit.si';
         const options = {
-            roomName: sessionCode,
+            roomName: sessionCode, // Use the session code as the room name
             width: '100%',
             height: '100%',
             parentNode: document.getElementById('jitsi-receiver'),
@@ -271,6 +279,7 @@ const Receiver = () => {
             },
         };
 
+        // Initialize Jitsi Meet API
         try {
             jitsiRef.current = new window.JitsiMeetExternalAPI(domain, options);
         } catch (error) {
@@ -279,7 +288,7 @@ const Receiver = () => {
 
         return () => {
             if (jitsiRef.current) {
-                jitsiRef.current.dispose();
+                jitsiRef.current.dispose(); // Cleanup on unmount
             }
         };
     }, [sessionCode]);
@@ -301,6 +310,14 @@ const Receiver = () => {
                 <button className="leave-meeting-button" onClick={leaveMeeting}>
                     Leave Meeting
                 </button>
+                <div>
+                    <h3>Messages:</h3>
+                    <ul>
+                        {messages.map((msg, index) => (
+                            <li key={`message-${index}`}>{msg}</li>
+                        ))}
+                    </ul>
+                </div>
             </div>
         </div>
     );

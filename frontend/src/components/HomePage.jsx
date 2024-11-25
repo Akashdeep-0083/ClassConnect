@@ -51,10 +51,13 @@
 // export default HomePage;
 
 // src/components/HomePage.jsx
+
+
+// src/components/HomePage.jsx
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Navbar from './Navbar'; // Import the Navbar component
-import './Homepage.css'; // Import your CSS file for HomePage styles
+import Navbar from './Navbar';
+import './Homepage.css'; // Ensure your CSS file is correctly linked
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -62,14 +65,14 @@ const HomePage = () => {
     const startSession = useCallback(() => {
         const sessionCode = prompt("Enter a session code to start a session:");
         if (sessionCode) {
-            navigate(`/sender/${sessionCode}`);
+            navigate(`/sender/${sessionCode}`); // Navigate to the Sender component
         }
     }, [navigate]);
 
     const joinSession = useCallback(() => {
         const sessionCode = prompt("Enter a session code to join a session:");
         if (sessionCode) {
-            navigate(`/receiver/${sessionCode}`);
+            navigate(`/receiver/${sessionCode}`); // Navigate to the Receiver component
         }
     }, [navigate]);
 
